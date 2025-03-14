@@ -1,9 +1,8 @@
 "use client";
-import { headers } from "next/headers";
+
 import { useEffect, useState } from "react";
 import { ACCESS_TOKEN } from "./constants";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -11,10 +10,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+
 import Upcoming from "./components/upcoming";
 import TopRated from "./components/top-rated";
 import Popular from "./components/popular";
 import Footer from "./components/footer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+
+
 type MovieType = {
   id: number;
   title: string;
@@ -26,9 +30,13 @@ type MovieType = {
   vote_count: number;
   overview: string;
 };
-
+type SelectType = {
+  id: number;
+  name: string;
+}
 export default function Home() {
   const [movieList, setMovieList] = useState<MovieType[]>([]);
+  const [genreList, setGenreList] = useState<SelectType[]>([])
 
   const getMovies = async () => {
     const movies = await axios.get(
@@ -42,15 +50,43 @@ export default function Home() {
     );
     setMovieList(movies.data.results);
   };
+
+  const getGenreList = async () => {
+    const genres = await axios.get("https://api.themoviedb.org/3/genre/movie/list?language=en",
+      {
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`
+        }
+      }
+    )
+    setGenreList(genres.data.genres);
+    console.log(genres.data.genres)
+  }
+
   useEffect(() => {
     getMovies();
+    getGenreList()
   }, []);
 
+
+
   return (
-    <div
-      className="
-    grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
-    >
+    <div className="
+    grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Genre" />
+        </SelectTrigger>
+        <SelectContent>
+
+          {
+            genreList.map((genre) => {
+              return <SelectItem key={genre.id} value={String(genre.id)}>{genre.name}</SelectItem>
+            })
+          }
+
+        </SelectContent>
+      </Select>
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Carousel
           opts={{
