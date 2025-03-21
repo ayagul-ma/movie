@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ACCESS_TOKEN } from "../constants";
-import Link from "next/link";
 
 type MovieType = {
   id: number;
@@ -11,17 +10,16 @@ type MovieType = {
   video: boolean;
   orginal_language: string;
   orginal_title: string;
-  vote_count: number;
   vote_average: number;
   overview: string;
 };
 
-export default function Upcoming() {
-  const [upcomingList, setUpcomingList] = useState<MovieType[]>([]);
+export default function NowPlaying() {
+  const [nowPlaying, setNowPlaying] = useState<MovieType[]>([]);
 
   const getMovies = async () => {
     const movies = await axios.get(
-      "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
+      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
 
       {
         headers: {
@@ -29,7 +27,7 @@ export default function Upcoming() {
         },
       }
     );
-    setUpcomingList(movies.data.results);
+    setNowPlaying(movies.data.results);
   };
   useEffect(() => {
     getMovies();
@@ -37,9 +35,9 @@ export default function Upcoming() {
 
   return (
     <div className="mb-5">
-      <h1>Upcoming</h1>
+      <h1>Now Playing</h1>
       <div className="flex flex-wrap gap-[32px]">
-        {upcomingList.slice(0, 10).map((movie) => {
+        {nowPlaying.slice(0, 10).map((movie) => {
           return (
             <div key={movie.id} className="w-[230px] h-[400px]">
               <img
@@ -50,9 +48,7 @@ export default function Upcoming() {
                 <span className="text-ellipsis">
                   🌟 {movie.vote_average} / 10
                 </span>
-                <h1>
-                  <Link href={`/movie/${movie.id}`}>{movie.title}</Link>
-                </h1>
+                <h1>{movie.title}</h1>
               </div>
             </div>
           );

@@ -15,6 +15,15 @@ import Upcoming from "./components/upcoming";
 import TopRated from "./components/top-rated";
 import Popular from "./components/popular";
 import Footer from "./components/footer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@radix-ui/react-select";
+import Header from "./components/header";
+import NowPlaying from "./components/now-playing";
 type MovieType = {
   id: number;
   title: string;
@@ -42,6 +51,7 @@ export default function Home() {
     );
     setMovieList(movies.data.results);
   };
+
   useEffect(() => {
     getMovies();
   }, []);
@@ -51,6 +61,8 @@ export default function Home() {
       className="
     grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
     >
+      <Header />
+
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <Carousel
           opts={{
@@ -79,6 +91,7 @@ export default function Home() {
 
         <Upcoming />
         <TopRated />
+        <NowPlaying />
         <Popular />
         <Footer />
       </main>
